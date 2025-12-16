@@ -8,7 +8,9 @@ from typing import Dict, List, Tuple, Optional
 from io import StringIO
 
 class PolicyMatcher:
-    def __init__(self, policy_dir: str = "POLICY_ID"):
+    def __init__(self, policy_dir: str = None):
+        if policy_dir is None:
+            policy_dir = os.path.join(os.path.dirname(__file__), "POLICY_ID")
         self.policy_dir = policy_dir
     
     def parse_policy_file(self, policy_file_path: str) -> Dict[Tuple[str, str, str], Tuple[str, str]]:

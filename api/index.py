@@ -5,6 +5,9 @@ import tempfile
 import json
 import time
 from werkzeug.utils import secure_filename
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
 from policy_matcher import PolicyMatcher
 import csv
 from io import StringIO
@@ -120,7 +123,7 @@ def list_policy_files():
     """List available policy files"""
     try:
         policy_files = []
-        policy_dir = 'POLICY_ID'
+        policy_dir = os.path.join(os.path.dirname(__file__), 'POLICY_ID')
         
         if os.path.exists(policy_dir):
             for filename in os.listdir(policy_dir):
@@ -140,10 +143,11 @@ def list_policy_files():
     except Exception as e:
         return jsonify({'error': f'Error listing policy files: {str(e)}'}), 500
 
-# For Vercel deployment
+# Add a simple health check
+@app.route('/health')
+def health():
+    return jsonify({'status': 'healthy', 'message': 'Policy Matcher API is running'})
+
+# For local development
 if __name__ == '__main__':
-    # Local development
     app.run(debug=True, host='0.0.0.0', port=5111)
-else:
-    # Production (Vercel)
-    app.config['DEBUG'] = False

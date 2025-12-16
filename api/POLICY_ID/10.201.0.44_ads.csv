@@ -1,0 +1,35 @@
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.133 22 10.201.0.44 22 tcp E2-EH-AGN
+<src [44.168.32.133-22] dst [10.201.0.44-22] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.133 80 10.201.0.44 80 tcp E2-EH-AGN
+<src [44.168.32.133-80] dst [10.201.0.44-80] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.202.164.157 9990 10.201.0.44 9990 tcp E2-EH-AGN
+<src [10.202.164.157-9990] dst [10.201.0.44-9990] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.201.3.52 22 10.201.0.44 22 tcp E2-EH-ADMOPE-1
+<src [10.201.3.52-22] dst [10.201.0.44-22] proto tcp dev E2-EH-ADMOPE-1> matches policy id: 683
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.135 22 10.201.0.44 22 tcp E2-EH-AGN
+<src [44.168.32.135-22] dst [10.201.0.44-22] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.135 80 10.201.0.44 80 tcp E2-EH-AGN
+<src [44.168.32.135-80] dst [10.201.0.44-80] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.72.42.5 22 10.201.0.44 22 tcp E2-EH-AGN
+<src [10.72.42.5-22] dst [10.201.0.44-22] proto tcp dev E2-EH-AGN> matches policy id: 8870
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.202.166.144 80 10.201.0.44 80 tcp E2-EH-AGN
+<src [10.202.166.144-80] dst [10.201.0.44-80] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.201.33.40 22 10.201.0.44 22 tcp E2-EH-PART
+<src [10.201.33.40-22] dst [10.201.0.44-22] proto tcp dev E2-EH-PART> matches policy id: 685
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.134 22 10.201.0.44 22 tcp E2-EH-AGN
+<src [44.168.32.134-22] dst [10.201.0.44-22] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.134 80 10.201.0.44 80 tcp E2-EH-AGN
+<src [44.168.32.134-80] dst [10.201.0.44-80] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.145 22 10.201.0.44 22 tcp E2-EH-AGN
+<src [44.168.32.145-22] dst [10.201.0.44-22] proto tcp dev E2-EH-AGN> matches policy id: 4151

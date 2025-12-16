@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Group Policy Matcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #dst_ip {
+            width: 60%;
+            max-width: 300px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .success {
+            background-color: #28a745;
+        }
+        .success:hover {
+            background-color: #1e7e34;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success-msg {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .log-container {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-container pre {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .policy-files {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #dee2e6;
+        }
+        .policy-file {
+            display: block;
+            margin: 5px 0;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .policy-file:hover {
+            background-color: #0056b3;
+        }
+        .policy-file.unsupported {
+            background-color: #6c757d;
+        }
+        .policy-file.unsupported:hover {
+            background-color: #545b62;
+        }
+        #policy-search {
+            width: 60%;
+            max-width: 400px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .no-results {
+            color: #6c757d;
+            font-style: italic;
+            padding: 10px;
+            text-align: center;
+        }
+        .selected-policy {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 8px 12px;
+            margin: 5px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .selected-policy .close-btn {
+            background: none;
+            border: none;
+            color: #155724;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+        }
+        .selected-policy .close-btn:hover {
+            color: #0a3622;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Security Group Policy Matcher</h1>
+        
+        <div id="policy-search-section">
+            <h3>Search Policy Files:</h3>
+            <div class="form-group">
+                <div style="position: relative; display: inline-block; width: 60%; max-width: 400px;">
+                    <input type="text" id="policy-search" placeholder="Type destination IP to search (e.g., 10.201.0.85)" style="margin-bottom: 10px; padding-right: 40px; width: 100%;">
+                    <button type="button" id="clear-search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: #6c757d; display: none;" title="Clear search">×</button>
+                </div>
+                <div id="search-results" class="policy-files" style="display: none;">
+                    <!-- Search results will appear here -->
+                </div>
+                <div id="selected-policy" class="selected-policy" style="display: none;">
+                    <!-- Selected policy message will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <form id="sg-form">
+            <div class="form-group">
+                <label for="dst_ip">Destination IP Address:</label>
+                <input type="text" id="dst_ip" name="dst_ip" placeholder="e.g., 10.201.0.9" required>
+                <small style="color: #666;">Enter the destination IP to find matching policy file</small>
+            </div>
+
+            <div class="two-column">
+                <div class="form-group">
+                    <label for="sg_file">Upload Security Group CSV File:</label>
+                    <input type="file" id="sg_file" name="sg_file" accept=".csv">
+                </div>
+                
+                <div style="text-align: center; padding-top: 30px;">
+                    <strong>OR</strong>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="sg_content">Paste Security Group CSV Content:</label>
+                <textarea id="sg_content" name="sg_content" rows="10" placeholder="Paste your CSV content here...&#10;resource_name,type,name,description,cidr_ipv4,cidr_ipv6,prefix_list_id,referenced_security_group_id,ip_protocol,from_port,to_port&#10;sg,egress,all,Allow all outgoing traffic,0.0.0.0/0,,,,-1,-1,-1&#10;sg,ingress,rule-1,Test rule,10.201.0.0/16,,,,tcp,80,80"></textarea>
+            </div>
+
+            <div style="text-align: center;">
+                <button type="submit" class="button">🔍 Process & Match Policy IDs</button>
+                <button type="button" id="clear-btn" class="button" style="background-color: #6c757d;">🗑️ Clear</button>
+            </div>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing security group rules...</p>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div id="success-message" class="success-msg"></div>
+            
+            <div class="form-group">
+                <label for="updated_content">Updated Security Group Content:</label>
+                <textarea id="updated_content" rows="15" readonly style="background-color: #f8f9fa;"></textarea>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button type="button" id="download-btn" class="button success">💾 Download Updated CSV</button>
+                <button type="button" id="copy-btn" class="button">📋 Copy to Clipboard</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Processing Log:</label>
+                <div id="log-messages" class="log-container">
+                    <pre id="log-content"></pre>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-message" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentResults = null;
+        let allPolicyFiles = [];
+        let searchTimeout = null;
+
+        // Load policy files on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPolicyFiles();
+            setupPolicySearch();
+        });
+
+        function loadPolicyFiles() {
+            fetch('/list_policy_files')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.policy_files && data.policy_files.length > 0) {
+                        allPolicyFiles = data.policy_files;
+                    } else {
+                        allPolicyFiles = [];
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading policy files:', error);
+                    allPolicyFiles = [];
+                });
+        }
+
+        function setupPolicySearch() {
+            const searchInput = document.getElementById('policy-search');
+            const searchResults = document.getElementById('search-results');
+            const clearButton = document.getElementById('clear-search');
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                // Show/hide clear button
+                clearButton.style.display = query.length > 0 ? 'block' : 'none';
+                
+                // Clear previous timeout
+                if (searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+
+                // Debounce search
+                searchTimeout = setTimeout(() => {
+                    if (query.length === 0) {
+                        searchResults.style.display = 'none';
+                        return;
+                    }
+
+                    searchPolicyFiles(query);
+                }, 300);
+            });
+
+            // Clear search functionality
+            clearButton.addEventListener('click', function() {
+                searchInput.value = '';
+                searchResults.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchInput.focus();
+            });
+
+            // Hide results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#policy-search-section')) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+
+        function searchPolicyFiles(query) {
+            const searchResults = document.getElementById('search-results');
+            
+            if (allPolicyFiles.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">No policy files available</div>';
+                searchResults.style.display = 'block';
+                return;
+            }
+
+            // Filter policy files based on query
+            const filteredFiles = allPolicyFiles.filter(file => 
+                file.ip.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (filteredFiles.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">No policy files found matching "' + query + '"</div>';
+            } else {
+                searchResults.innerHTML = filteredFiles.map(file => 
+                    `<div class="policy-file ${file.supported ? '' : 'unsupported'}" 
+                           onclick="selectPolicyFile('${file.ip}')" 
+                           title="Click to set as destination IP">
+                        📄 ${file.ip} (${file.type})${file.supported ? '' : ' - Unsupported'}
+                     </div>`
+                ).join('');
+            }
+            
+            searchResults.style.display = 'block';
+        }
+
+        function selectPolicyFile(ip) {
+            // Find the selected policy file info
+            const selectedFile = allPolicyFiles.find(file => file.ip === ip);
+            
+            // Set the destination IP
+            document.getElementById('dst_ip').value = ip;
+            
+            // Show selected policy message
+            const selectedPolicyDiv = document.getElementById('selected-policy');
+            selectedPolicyDiv.innerHTML = `
+                <span>✅ Selected policy file: <strong>${ip}</strong> (${selectedFile.type})</span>
+                <button type="button" class="close-btn" onclick="clearSelectedPolicy()" title="Clear selection">×</button>
+            `;
+            selectedPolicyDiv.style.display = 'block';
+            
+            // Clear search and hide results
+            document.getElementById('policy-search').value = '';
+            document.getElementById('search-results').style.display = 'none';
+            document.getElementById('clear-search').style.display = 'none';
+            
+            // Focus on the destination IP field to show it was filled
+            document.getElementById('dst_ip').focus();
+            document.getElementById('dst_ip').select();
+        }
+
+        function clearSelectedPolicy() {
+            document.getElementById('selected-policy').style.display = 'none';
+            document.getElementById('dst_ip').value = '';
+            document.getElementById('policy-search').focus();
+        }
+
+        document.getElementById('sg-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            
+            fetch('/process', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.success) {
+                    currentResults = data;
+                    
+                    document.getElementById('success-message').textContent = 
+                        `✅ Processing complete! Found ${data.matches_found} policy matches for destination IP ${data.dst_ip}`;
+                    
+                    document.getElementById('updated_content').value = data.updated_content;
+                    document.getElementById('log-content').textContent = data.log_messages.join('\n');
+                    document.getElementById('results').style.display = 'block';
+                } else {
+                    showError(data.error || 'Unknown error occurred');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                showError('Network error: ' + error.message);
+            });
+        });
+
+        document.getElementById('download-btn').addEventListener('click', function() {
+            if (!currentResults) return;
+            
+            fetch('/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    updated_content: currentResults.updated_content,
+                    dst_ip: currentResults.dst_ip
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                }
+                throw new Error('Download failed');
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `security_group_${currentResults.dst_ip}_updated.csv`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                showError('Download error: ' + error.message);
+            });
+        });
+
+        document.getElementById('copy-btn').addEventListener('click', function() {
+            const textarea = document.getElementById('updated_content');
+            textarea.select();
+            document.execCommand('copy');
+            
+            const btn = this;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        });
+
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            document.getElementById('sg-form').reset();
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            currentResults = null;
+        });
+
+        // File input change handler
+        document.getElementById('sg_file').addEventListener('change', function() {
+            if (this.files.length > 0) {
+                document.getElementById('sg_content').value = '';
+            }
+        });
+
+        // Textarea change handler
+        document.getElementById('sg_content').addEventListener('input', function() {
+            if (this.value.trim()) {
+                document.getElementById('sg_file').value = '';
+            }
+        });
+
+        // Clear selected policy message when destination IP is manually changed
+        document.getElementById('dst_ip').addEventListener('input', function() {
+            const selectedPolicyDiv = document.getElementById('selected-policy');
+            if (selectedPolicyDiv.style.display === 'block') {
+                // Check if the current value matches the selected policy
+                const selectedText = selectedPolicyDiv.textContent;
+                const currentIP = this.value.trim();
+                if (!selectedText.includes(currentIP) || currentIP === '') {
+                    selectedPolicyDiv.style.display = 'none';
+                }
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = '❌ ' + message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

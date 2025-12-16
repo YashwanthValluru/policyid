@@ -1,0 +1,47 @@
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.201.3.18 135 10.201.0.50 135 tcp E2-EH-ADMOPE-1
+<src [10.201.3.18-135] dst [10.201.0.50-135] proto tcp dev E2-EH-ADMOPE-1> matches policy id: 2981
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.201.3.18 49152 10.201.0.50 49152 tcp E2-EH-ADMOPE-1
+<src [10.201.3.18-49152] dst [10.201.0.50-49152] proto tcp dev E2-EH-ADMOPE-1> matches policy id: 683
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.201.3.196 135 10.201.0.50 135 tcp E2-EH-ADMOPE-1
+<src [10.201.3.196-135] dst [10.201.0.50-135] proto tcp dev E2-EH-ADMOPE-1> matches policy id: 683
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.201.3.196 49152 10.201.0.50 49152 tcp E2-EH-ADMOPE-1
+<src [10.201.3.196-49152] dst [10.201.0.50-49152] proto tcp dev E2-EH-ADMOPE-1> matches policy id: 683
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.202.141.55 445 10.201.0.50 445 tcp E2-EH-AGN
+<src [10.202.141.55-445] dst [10.201.0.50-445] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.202.141.218 445 10.201.0.50 445 tcp E2-EH-AGN
+<src [10.202.141.218-445] dst [10.201.0.50-445] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.202.141.218 47001 10.201.0.50 47001 tcp E2-EH-AGN
+<src [10.202.141.218-47001] dst [10.201.0.50-47001] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.202.141.218 5985 10.201.0.50 5985 tcp E2-EH-AGN
+<src [10.202.141.218-5985] dst [10.201.0.50-5985] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.202.141.218 3389 10.201.0.50 3389 tcp E2-EH-AGN
+<src [10.202.141.218-3389] dst [10.201.0.50-3389] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.72.42.11 135 10.201.0.50 135 tcp E2-EH-AGN
+<src [10.72.42.11-135] dst [10.201.0.50-135] proto tcp dev E2-EH-AGN> matches policy id: 8870
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.72.42.11 49152 10.201.0.50 49152 tcp E2-EH-AGN
+<src [10.72.42.11-49152] dst [10.201.0.50-49152] proto tcp dev E2-EH-AGN> matches policy id: 8870
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.135 445 10.201.0.50 445 tcp E2-EH-AGN
+<src [44.168.32.135-445] dst [10.201.0.50-445] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.135 135 10.201.0.50 135 tcp E2-EH-AGN
+<src [44.168.32.135-135] dst [10.201.0.50-135] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.135 5985 10.201.0.50 5985 tcp E2-EH-AGN
+<src [44.168.32.135-5985] dst [10.201.0.50-5985] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 44.168.32.135 49152 10.201.0.50 49152 tcp E2-EH-AGN
+<src [44.168.32.135-49152] dst [10.201.0.50-49152] proto tcp dev E2-EH-AGN> matches policy id: 4151
+
+FR-E2-FW-EH-1-FNET # diagnose firewall iprope lookup 10.201.89.12 135 10.201.0.50 135 tcp E2-EH-ADMOPE-2
+<src [10.201.89.12-135] dst [10.201.0.50-135] proto tcp dev E2-EH-ADMOPE-2> matches policy id: 683
